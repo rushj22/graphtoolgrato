@@ -1,82 +1,88 @@
+<!-- author: arushi -->
 <!doctype html>
 <html>
 <head>
 	<title>Grato</title>
-
 	<script type="text/javascript">
-		var x,y,count=0,edge,vertex,graph_type,graph_weight,weight,index=1;
-		var myGraph=[{first_vertex:"",second_vertex:"",wei:""}];
 
-		//myGraph.second_vertex.sort(); wont work
-		//create sort function from http://www.javascriptkit.com/javatutors/arraysort2.shtml
+	var graph_type,graph_weighttype,graph_edge,graph_vertex,graph_vertex1,graph_vertex2,graph_weight;
+	var edge_count=0,index=1;
 
-		function change1()
+	var myGraph=[{vertex1:"",vertex2:"",weight:""}];
+
+		function weightvisible()
+		{
+			document.getElementById("g_weight").style.display = 'none';
+		}
+
+		function g_button_type()
 		{
 			graph_type=document.getElementById("g_type").value
-			document.getElementById("gtype").innerHTML=graph_type;
+			document.getElementById("g_print_type").innerHTML=graph_type;
 		}
 
-		function change4()
+		function g_button_weighttype()
 		{
-			graph_weight=document.getElementById("g_weight").value
-			document.getElementById("gweight").innerHTML=graph_weight;
-			if(graph_weight.localeCompare("weighted")==0)
+			graph_weighttype=document.getElementById("g_weighttype").value
+			document.getElementById("g_print_weighttype").innerHTML=graph_weighttype;
+			if(graph_weighttype.localeCompare("weighted")==0)
 			{
-				document.getElementById("weight").style.display = 'inline';
+				document.getElementById("g_weight").style.display = 'inline';
 			}
 		}
 
-		function change2()
+		function g_button_edgevertex()
 		{	
-			edge=document.getElementById("edges").value;
-			vertex=document.getElementById("vertices").value;
-			document.getElementById("env").innerHTML="edges: "+edge+" vertices: "+vertex;
-		}	
-		
-		function change3()
+			graph_edge=document.getElementById("g_edge").value;
+			graph_vertex=document.getElementById("g_vertex").value;
+			document.getElementById("g_print_edgevertex").innerHTML="edges: "+graph_edge+" vertices: "+graph_vertex;
+		}
+
+		function g_button_edgenodes()
 		{
-			x=document.getElementById("vertex1").value;
-			y=document.getElementById("vertex2").value;
-			if (graph_weight.localeCompare("weighted")==0)
-				weight=document.getElementById("weight").value;
+			graph_vertex1=document.getElementById("g_vertex1").value;
+			graph_vertex2=document.getElementById("g_vertex2").value;
+			if (graph_weighttype.localeCompare("weighted")==0)
+				graph_weight=document.getElementById("g_weight").value;
 			else
-				weight=1;
-			count++;
-			if (count>edge)
+				graph_weight=1;
+
+			edge_count++;
+			if (edge_count>graph_edge)
 			{
-				var newPara=document.createElement('p');
-				newPara.textContent="You have already entered number of edges mentioned";
-				document.getElementById("newgraph").appendChild(newPara);
+				var newEdge=document.createElement('p');
+				newEdge.textContent="You have already entered number of edges mentioned";
+				document.getElementById("print_newedge").appendChild(newEdge);
 
 			}
 			else
 			{
-				var newobj={first_vertex:x,second_vertex:y,wei:weight};
+				var newobj={vertex1:graph_vertex1,vertex2:graph_vertex2,weight:graph_weight};
 				myGraph.push(newobj);
 
-				var newValue=document.createElement('p');
-				newValue.textContent="first_vertex: "+myGraph[index].first_vertex+" second_vertex: "+myGraph[index].second_vertex+" weight:"+myGraph[index].wei+"\n";
-				document.getElementById("newgraph").appendChild(newValue);
+				var newEdge=document.createElement('p');
+				newEdge.textContent="vertex1: "+myGraph[index].vertex1+" vertex2: "+myGraph[index].vertex2+" weight: "+myGraph[index].weight+"\n";
+				document.getElementById("print_newedge").appendChild(newEdge);
 				
 				index++;
 			
 				if(graph_type.localeCompare("undirected")==0)
 					{
-						var newobj={first_vertex:y,second_vertex:x,wei:weight};
+						var newobj={vertex1:graph_vertex2,vertex2:graph_vertex1,weight:graph_weight};
 						myGraph.push(newobj);
 
 						var newValue=document.createElement('p');
-						newValue.textContent="first_vertex: "+myGraph[index].first_vertex+" second_vertex: "+myGraph[index].second_vertex+myGraph[index].wei+"\n";
-						document.getElementById("newgraph").appendChild(newValue);
+						newValue.textContent="vertex1: "+myGraph[index].vertex1+" vertex2: "+myGraph[index].vertex2+" weight: "+myGraph[index].weight+"\n";
+						document.getElementById("print_newedge").appendChild(newValue);
 						index++;
 					}
 
-				if(graph_weight.localeCompare("weighted")==0)
+				if(graph_weighttype.localeCompare("weighted")==0)
 					{
 
 						var newValue=document.createElement('p');
-						newValue.textContent=" weight: "+weight+"\n";
-						document.getElementById("newgraph").appendChild(newValue);
+						newValue.textContent=" weight: "+graph_weight+"\n";
+						document.getElementById("print_newedge").appendChild(newValue);
 							
 					}		
 
@@ -84,39 +90,34 @@
 
 			
 		}
-
-		function hidee()
-		{
-			document.getElementById("weight").style.display = 'none';
-		}
-
+		
 	</script>
 </head>
-<body onload=hidee()>
+
+<body onload= weightvisible()>
 
 <h3>Enter type of Graph (directed / undirected) </h3>
 <input type="text" style="width:75px" id="g_type">
-<button type="button" id="button1" onclick="change1()" >Enter</button><br />
+<button type="button" id="button_type" onclick="g_button_type()" >Enter</button><br />
 
 <h3>Enter type of Graph (weighted / unweighted) </h3>
-<input type="text" style="width:75px" id="g_weight">
-<button type="button" id="button1" onclick="change4()" >Enter</button><br />
+<input type="text" style="width:75px" id="g_weighttype">
+<button type="button" id="button_weighttype" onclick="g_button_weighttype()" >Enter</button><br />
 
 <h3>Enter the number of edges and vertices</h3>
-<input type="text" style="width:75px" id="edges">
-<input type="text" style="width:75px" id="vertices" />
-<button type="button" id="button2" onclick="change2()" >Enter</button><br />
+<input type="text" style="width:75px" id="g_edge">
+<input type="text" style="width:75px" id="g_vertex" />
+<button type="button" id="button_edgevertex" onclick="g_button_edgevertex()" >Enter</button><br />
 
 <h3>Enter the edge nodes</h3>
-<input type="text" style="width:75px" id="vertex1" />
-<input type="text" style="width:75px" id="vertex2" />
-<input type="text" style="width:75px" id="weight" />
-<button type="button" id="button4" onclick="change3()" >Enter</button><br />
-<p id="gtype"></p>
-<p id="gweight"></p>
-<p id="env"></p>
-<p id="updateDiv"></p>
-<p id="newgraph"></p>
+<input type="text" style="width:75px" id="g_vertex1" />
+<input type="text" style="width:75px" id="g_vertex2" />
+<input type="text" style="width:75px" id="g_weight" />
+<button type="button" id="button_edgenodes" onclick="g_button_edgenodes()" >Enter</button><br />
 
+<p id="g_print_type"></p>
+<p id="g_print_weighttype"></p>
+<p id="g_print_edgevertex"></p>
+<p id="print_newedge"></p>
 </body>
 </html>
