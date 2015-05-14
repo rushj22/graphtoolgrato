@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+	<title>Grato</title>
+
+<script type="text/javascript">
+	var x,y,count=0,edge,vertex,graph_type;
+	/*
+	function onBlur(el) 
+	{
+   		if (el.value == '') 
+   			el.value = el.defaultValue;
+	}
+	
+	function onFocus(el)
+	{
+    	if (el.value == el.defaultValue) {
+        	el.value = '';
+    }
+	*/
+	function change1()
+	{
+		graph_type=document.getElementById("g_type").value
+		document.getElementById("gtype").innerHTML=graph_type;
+	}
+	function change2()
+	{	
+		edge=document.getElementById("edges").value;
+		vertex=document.getElementById("vertices").value;
+		document.getElementById("env").innerHTML="edges: "+edge+" vertices: "+vertex;
+	}
+	edge=document.getElementById("edges").value;
+	function change3()
+	{
+		x=document.getElementById("vertex1").value;
+		y=document.getElementById("vertex2").value;
+		count++;
+		if (count>edge)
+		{
+			var newPara=document.createElement('p');
+			newPara.textContent="You have already entered number of edges mentioned";
+			document.getElementById("updateDiv").appendChild(newPara);
+
+		}
+		else
+		{
+			var newPara=document.createElement('p');
+			newPara.textContent=x+" "+y+"\n";
+			document.getElementById("updateDiv").appendChild(newPara);
+			
+		}
+
+		
+	}
+</script>
+</head>
+<body>
+
+<h3>Enter type of Graph (directed / undirected) </h3>
+<input type="text" style="width:75px" id="g_type">
+<button type="button" id="button1" onclick="change1()" >Enter</button><br />
+
+<h3>Enter the number of edges and vertices</h3>
+<input type="text" style="width:75px" id="edges">
+<input type="text" style="width:75px" id="vertices" />
+<button type="button" id="button2" onclick="change2()" >Enter</button><br />
+
+<h3>Enter the edge nodes</h3>
+<input type="text" style="width:75px" id="vertex1" />
+<input type="text" style="width:75px" id="vertex2" />
+<button type="button" id="button4" onclick="change3()" >Enter</button><br />
+<p id="gtype"></p>
+<p id="env"></p>
+<p id="updateDiv"></p>
+
+</body>
+</html>
