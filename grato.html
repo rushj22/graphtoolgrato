@@ -4,23 +4,27 @@
 <head>
 	<title>Grato</title>
 	<script type="text/javascript">
-
 	var graph_type,graph_weighttype,graph_edge,graph_vertex,graph_vertex1,graph_vertex2,graph_weight;
 	var edge_count=0,index=1;
-
 	var myGraph=[{vertex1:"",vertex2:"",weight:""}];
+	var myGraph_undir=[{vertex1:"",vertex2:"",weight:""}];
 
 		function weightvisible()
 		{
 			document.getElementById("g_weight").style.display = 'none';
 		}
-
 		function g_button_type()
 		{
 			graph_type=document.getElementById("g_type").value
 			document.getElementById("g_print_type").innerHTML=graph_type;
 		}
-
+		function check_graph_type()
+		{
+			if (graph_type.localeCompare("directed")==0)
+				return 1;
+			else if (graph_type.localeCompare("undirected")==0)
+				return 0;
+		}
 		function g_button_weighttype()
 		{
 			graph_weighttype=document.getElementById("g_weighttype").value
@@ -30,14 +34,19 @@
 				document.getElementById("g_weight").style.display = 'inline';
 			}
 		}
-
+		function check_graph_weighttype()
+		{
+			if (graph_weighttype.localeCompare("weighted")==0)
+				return 1;
+			else if (graph_weighttype.localeCompare("unweighted")==0)
+				return 0;
+		}
 		function g_button_edgevertex()
 		{	
 			graph_edge=document.getElementById("g_edge").value;
 			graph_vertex=document.getElementById("g_vertex").value;
 			document.getElementById("g_print_edgevertex").innerHTML="edges: "+graph_edge+" vertices: "+graph_vertex;
 		}
-
 		function g_button_edgenodes()
 		{
 			graph_vertex1=document.getElementById("g_vertex1").value;
@@ -46,14 +55,18 @@
 				graph_weight=document.getElementById("g_weight").value;
 			else
 				graph_weight=1;
+			storeprint_graph()	
+		}
 
+		function storeprint_graph()
+		{	
 			edge_count++;
+
 			if (edge_count>graph_edge)
 			{
 				var newEdge=document.createElement('p');
 				newEdge.textContent="You have already entered number of edges mentioned";
 				document.getElementById("print_newedge").appendChild(newEdge);
-
 			}
 			else
 			{
@@ -61,33 +74,39 @@
 				myGraph.push(newobj);
 
 				var newEdge=document.createElement('p');
-				newEdge.textContent="vertex1: "+myGraph[index].vertex1+" vertex2: "+myGraph[index].vertex2+" weight: "+myGraph[index].weight+"\n";
+				newEdge.textContent="vertex1: "+myGraph[edge_count].vertex1+" vertex2: "+myGraph[edge_count].vertex2+" weight: "+myGraph[edge_count].weight+"\n";
 				document.getElementById("print_newedge").appendChild(newEdge);
 				
-				index++;
+				
 			
-				if(graph_type.localeCompare("undirected")==0)
+				if(check_graph_type()==0)
 					{
+						myGraph_undir.push(newobj);
 						var newobj={vertex1:graph_vertex2,vertex2:graph_vertex1,weight:graph_weight};
-						myGraph.push(newobj);
+						myGraph_undir.push(newobj);
+
+				/*print undir_graph
+						var newValue=document.createElement('p');
+						newValue.textContent="undirec: vertex1: "+myGraph_undir[index].vertex1+" vertex2: "+myGraph_undir[index].vertex2+" weight: "+myGraph_undir[index].weight+"\n";
+						document.getElementById("print_newedge").appendChild(newValue);
 
 						var newValue=document.createElement('p');
-						newValue.textContent="vertex1: "+myGraph[index].vertex1+" vertex2: "+myGraph[index].vertex2+" weight: "+myGraph[index].weight+"\n";
+						newValue.textContent="undirec: vertex1: "+myGraph_undir[index+1].vertex1+" vertex2: "+myGraph_undir[index+1].vertex2+" weight: "+myGraph_undir[index+1].weight+"\n";
 						document.getElementById("print_newedge").appendChild(newValue);
-						index++;
+						index+=2;
+				*/
 					}
 
-				if(graph_weighttype.localeCompare("weighted")==0)
+			/*print weight		
+				if(check_graph_weighttype()==1)
 					{
-
 						var newValue=document.createElement('p');
 						newValue.textContent=" weight: "+graph_weight+"\n";
 						document.getElementById("print_newedge").appendChild(newValue);
 							
-					}		
-
+					}	
+			*/	
 			}
-
 			
 		}
 		
