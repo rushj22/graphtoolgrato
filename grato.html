@@ -3,62 +3,104 @@
 <head>
 	<title>Grato</title>
 
-<script type="text/javascript">
-	var x,y,count=0,edge,vertex,graph_type;
-	/*
-	function onBlur(el) 
-	{
-   		if (el.value == '') 
-   			el.value = el.defaultValue;
-	}
-	
-	function onFocus(el)
-	{
-    	if (el.value == el.defaultValue) {
-        	el.value = '';
-    }
-	*/
-	function change1()
-	{
-		graph_type=document.getElementById("g_type").value
-		document.getElementById("gtype").innerHTML=graph_type;
-	}
-	function change2()
-	{	
-		edge=document.getElementById("edges").value;
-		vertex=document.getElementById("vertices").value;
-		document.getElementById("env").innerHTML="edges: "+edge+" vertices: "+vertex;
-	}
-	edge=document.getElementById("edges").value;
-	function change3()
-	{
-		x=document.getElementById("vertex1").value;
-		y=document.getElementById("vertex2").value;
-		count++;
-		if (count>edge)
-		{
-			var newPara=document.createElement('p');
-			newPara.textContent="You have already entered number of edges mentioned";
-			document.getElementById("updateDiv").appendChild(newPara);
+	<script type="text/javascript">
+		var x,y,count=0,edge,vertex,graph_type,graph_weight,weight,index=1;
+		var myGraph=[{first_vertex:"",second_vertex:"",wei:""}];
 
-		}
-		else
+		//myGraph.second_vertex.sort(); wont work
+		//create sort function from http://www.javascriptkit.com/javatutors/arraysort2.shtml
+
+		function change1()
 		{
-			var newPara=document.createElement('p');
-			newPara.textContent=x+" "+y+"\n";
-			document.getElementById("updateDiv").appendChild(newPara);
+			graph_type=document.getElementById("g_type").value
+			document.getElementById("gtype").innerHTML=graph_type;
+		}
+
+		function change4()
+		{
+			graph_weight=document.getElementById("g_weight").value
+			document.getElementById("gweight").innerHTML=graph_weight;
+			if(graph_weight.localeCompare("weighted")==0)
+			{
+				document.getElementById("weight").style.display = 'inline';
+			}
+		}
+
+		function change2()
+		{	
+			edge=document.getElementById("edges").value;
+			vertex=document.getElementById("vertices").value;
+			document.getElementById("env").innerHTML="edges: "+edge+" vertices: "+vertex;
+		}	
+		
+		function change3()
+		{
+			x=document.getElementById("vertex1").value;
+			y=document.getElementById("vertex2").value;
+			if (graph_weight.localeCompare("weighted")==0)
+				weight=document.getElementById("weight").value;
+			else
+				weight=1;
+			count++;
+			if (count>edge)
+			{
+				var newPara=document.createElement('p');
+				newPara.textContent="You have already entered number of edges mentioned";
+				document.getElementById("newgraph").appendChild(newPara);
+
+			}
+			else
+			{
+				var newobj={first_vertex:x,second_vertex:y,wei:weight};
+				myGraph.push(newobj);
+
+				var newValue=document.createElement('p');
+				newValue.textContent="first_vertex: "+myGraph[index].first_vertex+" second_vertex: "+myGraph[index].second_vertex+" weight:"+myGraph[index].wei+"\n";
+				document.getElementById("newgraph").appendChild(newValue);
+				
+				index++;
+			
+				if(graph_type.localeCompare("undirected")==0)
+					{
+						var newobj={first_vertex:y,second_vertex:x,wei:weight};
+						myGraph.push(newobj);
+
+						var newValue=document.createElement('p');
+						newValue.textContent="first_vertex: "+myGraph[index].first_vertex+" second_vertex: "+myGraph[index].second_vertex+myGraph[index].wei+"\n";
+						document.getElementById("newgraph").appendChild(newValue);
+						index++;
+					}
+
+				if(graph_weight.localeCompare("weighted")==0)
+					{
+
+						var newValue=document.createElement('p');
+						newValue.textContent=" weight: "+weight+"\n";
+						document.getElementById("newgraph").appendChild(newValue);
+							
+					}		
+
+			}
+
 			
 		}
 
-		
-	}
-</script>
+		function hidee()
+		{
+			document.getElementById("weight").style.display = 'none';
+		}
+
+	</script>
 </head>
-<body>
+<body onload=hidee()>
 
 <h3>Enter type of Graph (directed / undirected) </h3>
 <input type="text" style="width:75px" id="g_type">
 <button type="button" id="button1" onclick="change1()" >Enter</button><br />
+
+<h3>Enter type of Graph (weighted / unweighted) </h3>
+<input type="text" style="width:75px" id="g_weight">
+<button type="button" id="button1" onclick="change4()" >Enter</button><br />
 
 <h3>Enter the number of edges and vertices</h3>
 <input type="text" style="width:75px" id="edges">
@@ -68,10 +110,13 @@
 <h3>Enter the edge nodes</h3>
 <input type="text" style="width:75px" id="vertex1" />
 <input type="text" style="width:75px" id="vertex2" />
+<input type="text" style="width:75px" id="weight" />
 <button type="button" id="button4" onclick="change3()" >Enter</button><br />
 <p id="gtype"></p>
+<p id="gweight"></p>
 <p id="env"></p>
 <p id="updateDiv"></p>
+<p id="newgraph"></p>
 
 </body>
 </html>
