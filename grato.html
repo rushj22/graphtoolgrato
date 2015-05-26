@@ -8,37 +8,64 @@
 	var edge_count=0,index=1;
 	var myGraph=[{vertex1:"",vertex2:"",weight:""}];
 	var myGraph_undir=[{vertex1:"",vertex2:"",weight:""}];
+	var myGraph_mst=[{vertex1:"",vertex2:"",weight:""}];
+	var par=[];
+	var rank=[];
+
 
 		function weightvisible()
 		{
 			document.getElementById("g_weight").style.display = 'none';
 		}
-		function g_button_type()
+		function g_button_type(clicked_id_graphtype)
 		{
-			graph_type=document.getElementById("g_type").value
-			document.getElementById("g_print_type").innerHTML=graph_type;
+		
+			if (check_graph_type(clicked_id_graphtype)==1)
+			{
+				graph_type="directed";
+				document.getElementById("g_print_type").innerHTML=graph_type;
+			}
+			else if (check_graph_type(clicked_id_graphtype)==0)
+			{
+				graph_type="undirected";
+				document.getElementById("g_print_type").innerHTML=graph_type;
+			}
+			else
+				document.getElementById("g_print_type").innerHTML="Invalid, Enter again\n";	
 		}
-		function check_graph_type()
+		function check_graph_type(clicked_id_graphtype)
 		{
-			if (graph_type.localeCompare("directed")==0)
+			if (clicked_id_graphtype.localeCompare("button_directed")==0)
 				return 1;
-			else if (graph_type.localeCompare("undirected")==0)
+			else if (clicked_id_graphtype.localeCompare("button_undirected")==0)
 				return 0;
 		}
-		function g_button_weighttype()
+	
+		function g_button_weighttype(clicked_id_weighttype)
 		{
-			graph_weighttype=document.getElementById("g_weighttype").value
-			document.getElementById("g_print_weighttype").innerHTML=graph_weighttype;
-			if(graph_weighttype.localeCompare("weighted")==0)
+			
+			
+			if(check_graph_weighttype(clicked_id_weighttype)==1)
 			{
+				graph_weighttype="weighted";
 				document.getElementById("g_weight").style.display = 'inline';
+				document.getElementById("g_print_weighttype").innerHTML=graph_weighttype;
 			}
+						
+			else if(check_graph_weighttype(clicked_id_weighttype)==0)
+			{
+				graph_weighttype="unweighted";
+				document.getElementById("g_print_weighttype").innerHTML=graph_weighttype;
+			}
+			else
+				document.getElementById("g_print_weighttype").innerHTML="Invalid, Enter again\n";
+
 		}
-		function check_graph_weighttype()
+		function check_graph_weighttype(clicked_id_weighttype)
 		{
-			if (graph_weighttype.localeCompare("weighted")==0)
+			if (clicked_id_weighttype.localeCompare("button_weighted")==0)
 				return 1;
-			else if (graph_weighttype.localeCompare("unweighted")==0)
+			else if (clicked_id_weighttype.localeCompare("button_unweighted")==0)
 				return 0;
 		}
 		function g_button_edgevertex()
@@ -73,41 +100,94 @@
 				var newobj={vertex1:graph_vertex1,vertex2:graph_vertex2,weight:graph_weight};
 				myGraph.push(newobj);
 
-				var newEdge=document.createElement('p');
-				newEdge.textContent="vertex1: "+myGraph[edge_count].vertex1+" vertex2: "+myGraph[edge_count].vertex2+" weight: "+myGraph[edge_count].weight+"\n";
-				document.getElementById("print_newedge").appendChild(newEdge);
+				if(graph_weighttype.localeCompare("weighted")==0)
+				{
+					var newEdge=document.createElement('p');
+					newEdge.textContent="vertex1: "+myGraph[edge_count].vertex1+" vertex2: "+myGraph[edge_count].vertex2+" weight: "+myGraph[edge_count].weight+"\n";
+					document.getElementById("print_newedge").appendChild(newEdge);
+				}
 				
-				
+				else if(graph_weighttype.localeCompare("unweighted")==0)
+				{
+					var newEdge=document.createElement('p');
+					newEdge.textContent="vertex1: "+myGraph[edge_count].vertex1+" vertex2: "+myGraph[edge_count].vertex2+"\n";
+					document.getElementById("print_newedge").appendChild(newEdge);
+				}
 			
-				if(check_graph_type()==0)
+				if(graph_type.localeCompare("undirected")==0)
 					{
 						myGraph_undir.push(newobj);
 						var newobj={vertex1:graph_vertex2,vertex2:graph_vertex1,weight:graph_weight};
 						myGraph_undir.push(newobj);
 
-				/*print undir_graph
-						var newValue=document.createElement('p');
-						newValue.textContent="undirec: vertex1: "+myGraph_undir[index].vertex1+" vertex2: "+myGraph_undir[index].vertex2+" weight: "+myGraph_undir[index].weight+"\n";
-						document.getElementById("print_newedge").appendChild(newValue);
-
-						var newValue=document.createElement('p');
-						newValue.textContent="undirec: vertex1: "+myGraph_undir[index+1].vertex1+" vertex2: "+myGraph_undir[index+1].vertex2+" weight: "+myGraph_undir[index+1].weight+"\n";
-						document.getElementById("print_newedge").appendChild(newValue);
-						index+=2;
-				*/
 					}
-
-			/*print weight		
-				if(check_graph_weighttype()==1)
-					{
-						var newValue=document.createElement('p');
-						newValue.textContent=" weight: "+graph_weight+"\n";
-						document.getElementById("print_newedge").appendChild(newValue);
-							
-					}	
-			*/	
 			}
 			
+		}
+
+		function find(vertex)
+		{
+			if(vertex!=par[vertex])
+				return find(par[vertex]);
+			return par[vertex];
+		}
+
+		function union(v1,v2)
+		{
+			var x1=find(v1);
+			var x2=find(v2);
+
+			if (rank[x1]<rank[x2])
+				par[x1]=x2;
+			else if (rank[x2]<rank[x1])
+				par[x2]=x1;
+			else
+			{
+				par[x2]=x1;
+				rank[x1]++;
+			}
+		}
+		
+		function kruskal()
+		{
+			var i;
+			var newEdge=document.createElement('p');
+					newEdge.textContent="Kruskal Output\n";
+					document.getElementById("kruskal_mstedge").appendChild(newEdge);
+			for (i=1;i<=graph_edge;i++)
+			{
+				par[i]=i;
+				rank[i]=0;
+			}
+			myGraph.sort(function(a, b)
+			{
+				return a.weight-b.weight;
+			})
+
+
+			var ptr=1;
+			var count=0;
+
+			while(count!=graph_vertex-1)
+			{
+				//check long long
+				var v1=myGraph[ptr].vertex1;
+				var v2=myGraph[ptr].vertex2;
+				var x1=find(v1);
+				var x2=find(v2);
+				 if(x1!=x2)
+				 {
+				 	myGraph_mst.push(myGraph[ptr]);
+				 	count++;
+				 	union(myGraph[ptr].vertex1,myGraph[ptr].vertex2);
+				 	var newEdge=document.createElement('p');
+					newEdge.textContent=myGraph[ptr].vertex1+" "+myGraph[ptr].vertex2+"\n";
+					document.getElementById("kruskal_mstedge").appendChild(newEdge);
+				 }
+
+				ptr++;
+			}
+
 		}
 		
 	</script>
@@ -116,27 +196,32 @@
 <body onload= weightvisible()>
 
 <h3>Enter type of Graph (directed / undirected) </h3>
-<input type="text" style="width:75px" id="g_type">
-<button type="button" id="button_type" onclick="g_button_type()" >Enter</button><br />
+<button type="button" id="button_directed" onclick="g_button_type(this.id)" >Directed</button>
+<button type="button" id="button_undirected" onclick="g_button_type(this.id)" >Undirected</button><br />
 
 <h3>Enter type of Graph (weighted / unweighted) </h3>
-<input type="text" style="width:75px" id="g_weighttype">
-<button type="button" id="button_weighttype" onclick="g_button_weighttype()" >Enter</button><br />
+<button type="button" id="button_weighted" onclick="g_button_weighttype(this.id)" >Weighted</button>
+<button type="button" id="button_unweighted" onclick="g_button_weighttype(this.id)" >Unweighted</button><br />
 
-<h3>Enter the number of edges and vertices</h3>
+<h3>Enter the number of edges and vertices </h3>
 <input type="text" style="width:75px" id="g_edge">
 <input type="text" style="width:75px" id="g_vertex" />
 <button type="button" id="button_edgevertex" onclick="g_button_edgevertex()" >Enter</button><br />
 
-<h3>Enter the edge nodes</h3>
+<h3>Enter the edge nodes (and weight)</h3>
 <input type="text" style="width:75px" id="g_vertex1" />
 <input type="text" style="width:75px" id="g_vertex2" />
 <input type="text" style="width:75px" id="g_weight" />
 <button type="button" id="button_edgenodes" onclick="g_button_edgenodes()" >Enter</button><br />
 
+<h3>Function</h3>
+<button type="button" id="button_kruskal" onclick="kruskal()" >Kruskal</button><br />
+
 <p id="g_print_type"></p>
 <p id="g_print_weighttype"></p>
 <p id="g_print_edgevertex"></p>
 <p id="print_newedge"></p>
+<p id="kruskal_mstedge"></p>
+
 </body>
 </html>
