@@ -348,12 +348,20 @@
             }
         }
       }
+      var time=0;
       for(i=1;i<graph_vertex;i++)
       {
-          var newEdge=document.createElement('p');
-          newEdge.textContent=myGraph_mst[i].vertex1+" "+myGraph_mst[i].vertex2+" "+myGraph_mst[i].weight+"\n";
-          document.getElementById("prim_mstedge").appendChild(newEdge);
+        var label_name;
+        label_name="label"+myGraph_mst[i].vertex1+""+myGraph_mst[i].vertex2;
+        d3.select("svg").append("line").attr("id",label_name).attr("x1",myCoordinates[myGraph_mst[i].vertex1].x1).attr("y1",myCoordinates[myGraph_mst[i].vertex1].y1).attr("x2",myCoordinates[myGraph_mst[i].vertex2].x1).attr("y2",myCoordinates[myGraph_mst[i].vertex2].y1).style("stroke-width",2).style("stroke","green").transition().duration(1000).delay(time*2000).style("stroke","yellow");
+  /*    var newEdge=document.createElement('p');
+        newEdge.textContent=myGraph_mst[i].vertex1+" "+myGraph_mst[i].vertex2+" "+myGraph_mst[i].weight+"\n";
+        document.getElementById("prim_mstedge").appendChild(newEdge);*/
+        time++;
       }
+      var newEdge=document.createElement('p');
+      newEdge.textContent="Prim's Output\n";
+      document.getElementById("prim_mstedge").appendChild(newEdge);
     }
 
     var x,y;
