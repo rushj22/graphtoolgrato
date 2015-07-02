@@ -10,6 +10,7 @@
     var myGraph=[{vertex1:"",vertex2:"",weight:""}];
     var myGraph_undir=[{vertex1:"",vertex2:"",weight:""}];
     var myGraph_mst=[{vertex1:"",vertex2:"",weight:""}];
+    var myGraph_dijkresult=[{vertex1:"",vertex2:"",weight:""}];
  //  var myGraph_prim=[{vertex:"",key:""}];
 
     var par_krusk=[];
@@ -17,6 +18,9 @@
     var par_prim=[];
     var key_prim=[];
     var pres_prim=[];
+    var par_dijk=[];
+    var key_dijk=[];
+    var pres_dijk=[];
 
     function weightvisible()
     {
@@ -120,6 +124,29 @@
         }
       }
     }
+    function print_edges()
+    {
+      var i;
+      var x1=50;
+      var y1=50;
+      d3.select("svg").append("text").attr("x",x1).attr("y",y1).text("You entered:").attr("font-family", "sans-serif").attr("font-size", "20px").attr("fill", "green"); 
+      if(graph_weighttype.localeCompare("weighted")==0)
+      {
+        for(i=1;i<=graph_edge;i++)
+        {
+          y1=y1+40;
+          d3.select("svg").append("text").attr("x",x1).attr("y",y1).text(myGraph[i].vertex1+" "+myGraph[i].vertex2+"-->"+myGraph[i].weight).attr("font-family", "sans-serif").attr("font-size", "15px").attr("fill", "green");
+        }
+      }
+      else
+      {
+        for(i=1;i<=graph_edge;i++)
+        {
+          y1=y1+40;
+          d3.select("svg").append("text").attr("x",x1).attr("y",y1).text(myGraph[i].vertex1+" "+myGraph[i].vertex2).attr("font-family", "sans-serif").attr("font-size", "15px").attr("fill", "green");
+        }
+      }
+    }
 
     function find(vertex)
     {
@@ -144,10 +171,13 @@
     }   
     function kruskal()
     {
+      d3.selectAll("svg > *").remove();
+      g_button_drawgraph();
+      print_edges();
       var i;
-      var newEdge=document.createElement('p');
+  /*  var newEdge=document.createElement('p');
       newEdge.textContent="Kruskal Output\n";
-      document.getElementById("kruskal_mstedge").appendChild(newEdge);
+      document.getElementById("kruskal_mstedge").appendChild(newEdge);*/
 
       for (i=1;i<=graph_edge;i++)
       {
@@ -185,20 +215,20 @@
           time++;
          }
         ptr++;
-      }
+      }  
     }
     //source for priority queue: http://codereview.stackexchange.com/questions/15853/javascript-priorityqueue-based-on-object-property
 
     var que_len=0;
     var que=[];
 
-    function get_right_of(index_prim) 
+    function get_right_of(index_func) 
     {
-      return (index_prim * 2) + 2;
+      return (index_func * 2) + 2;
     }
-    function get_left_of(index_prim) 
+    function get_left_of(index_func) 
     {
-      return (index_prim * 2) + 1;
+      return (index_func * 2) + 1;
     }
     function evaluate(self, target) 
     {
@@ -227,6 +257,24 @@
         swap_till_correct_que(0);      
 
     }
+    function dijk_pop()
+    {
+      if (que_len <= 0) 
+      {
+        var newMsg=document.createElement('p');
+        newMsg.textContent="Empty Queue\n";
+        document.getElementById("print_dijkstra").appendChild(newMsg);
+      }
+      else
+      {
+        var oldRoot = que[0];
+        var newRoot = que.pop();
+        que_len--;
+        que[0] = newRoot;
+        swap_till_correct_que(0);
+    //    return oldRoot;
+      }    
+    }
     function prim_pop()
     {
       if (que_len <= 0) 
@@ -245,7 +293,7 @@
     //    return oldRoot;
       }    
     }
-    function prim_top()
+    function priorque_top()
     {
       return que[0];
     }
@@ -288,8 +336,10 @@
 
     function prim()
     {
-      var i;
-      var r=1;
+      var r=Number(document.getElementById("g_startnode").value);
+      d3.selectAll("svg > *").remove();
+      g_button_drawgraph();
+      print_edges();
       for(i=1;i<=graph_vertex;i++)
       {
         
@@ -304,7 +354,13 @@
         var newobj={vertex:i,key:key_prim[i]};
         priorque_insert(newobj);
       }
-      myGraph_undir.sort(function(a, b)
+      var myGraph_prim=[{vertex1:"",vertex2:"",weight:""}];
+      for(i=1;i<=2*graph_edge;i++)
+      {
+        var newobj=myGraph_undir[i];
+        myGraph_prim.push(newobj);
+      }
+      myGraph_prim.sort(function(a, b)
       {
         return a.vertex1-b.vertex1;
       })
@@ -315,17 +371,17 @@
         track[i]=0;
         position[i]=-1;
       }
-      position[myGraph_undir[1].vertex1]=1;
-      track[myGraph_undir[1].vertex1]++;
+      position[myGraph_prim[1].vertex1]=1;
+      track[myGraph_prim[1].vertex1]++;
       for(i=2;i<=2*graph_edge;i++)
       {
-        track[myGraph_undir[i].vertex1]++;
-        if(myGraph_undir[i].vertex1!==myGraph_undir[i-1].vertex1)
-          position[myGraph_undir[i].vertex1]=i;
+        track[myGraph_prim[i].vertex1]++;
+        if(myGraph_prim[i].vertex1!==myGraph_prim[i-1].vertex1)
+          position[myGraph_prim[i].vertex1]=i;
       }
       while (isEmpty()===0)
       { 
-        var newobj=prim_top();
+        var newobj=priorque_top();
         prim_pop();
         
         if(newobj.key<=key_prim[newobj.vertex])
@@ -333,11 +389,11 @@
             pres_prim[newobj.vertex]=0;
             for(i=position[newobj.vertex];i<=position[newobj.vertex]+track[newobj.vertex]-1;i++)
             {
-                if(pres_prim[myGraph_undir[i].vertex2]===1 && myGraph_undir[i].weight<key_prim[myGraph_undir[i].vertex2])
+                if(pres_prim[myGraph_prim[i].vertex2]===1 && myGraph_prim[i].weight<key_prim[myGraph_prim[i].vertex2])
                 {           
-                    par_prim[myGraph_undir[i].vertex2]=newobj.vertex;   
-                    key_prim[myGraph_undir[i].vertex2]=myGraph_undir[i].weight;             
-                    var newobj1={vertex:myGraph_undir[i].vertex2,key:key_prim[myGraph_undir[i].vertex2]};             
+                    par_prim[myGraph_prim[i].vertex2]=newobj.vertex;   
+                    key_prim[myGraph_prim[i].vertex2]=myGraph_prim[i].weight;             
+                    var newobj1={vertex:myGraph_prim[i].vertex2,key:key_prim[myGraph_prim[i].vertex2]};             
                     priorque_insert(newobj1);
                 }
             }           
@@ -364,8 +420,129 @@
       document.getElementById("prim_mstedge").appendChild(newEdge);
     }
 
+    function dijkstra()
+    {
+      var r=Number(document.getElementById("g_startnode").value);
+      d3.selectAll("svg > *").remove();
+      g_button_drawgraph();
+      print_edges();
+      var i;
+      for(i=1;i<=graph_vertex;i++)
+      {
+        
+        par_dijk[i]=-1;       
+        key_dijk[i]=Number.MAX_VALUE;;
+        pres_dijk[i]=1;
+      }
+            
+      key_dijk[r]=0;
+      pres_dijk[r]=0;
+      for(i=1;i<=graph_vertex;i++)
+      {
+        var newobj={vertex:i,key:key_dijk[i]};
+        priorque_insert(newobj);
+      }
+      var myGraph_dijk=[{vertex1:"",vertex2:"",weight:""}];
+      for(i=1;i<=2*graph_edge;i++)
+      {
+        var newobj=myGraph_undir[i];
+        myGraph_dijk.push(newobj);
+      }
+      myGraph_dijk.sort(function(a, b)
+      {
+        return a.vertex1-b.vertex1;
+      })
+      var track=[];
+      var position=[];
+      for(i=1;i<=graph_vertex;i++)
+      {
+        track[i]=0;
+        position[i]=-1;
+      }
+      
+      position[myGraph_dijk[1].vertex1]=1;
+      track[myGraph_dijk[1].vertex1]++;
+      for(i=2;i<=2*graph_edge;i++)
+      {
+        track[myGraph_dijk[i].vertex1]++;
+        if(myGraph_dijk[i].vertex1!==myGraph_dijk[i-1].vertex1)
+          position[myGraph_dijk[i].vertex1]=i;
+      }
+      while (isEmpty()===0)
+      { 
+        var newobj=priorque_top();
+        dijk_pop();
+        
+        if(newobj.key<=key_dijk[newobj.vertex])
+        {     
+            pres_dijk[newobj.vertex]=0;
+            for(i=position[newobj.vertex];i<=position[newobj.vertex]+track[newobj.vertex]-1;i++)
+            {
+                if(pres_dijk[myGraph_dijk[i].vertex2]===1 && myGraph_dijk[i].weight<key_dijk[myGraph_dijk[i].vertex2])
+                {           
+                    par_dijk[myGraph_dijk[i].vertex2]=newobj.vertex;   
+                    key_dijk[myGraph_dijk[i].vertex2]=myGraph_dijk[i].weight;             
+                    var newobj1={vertex:myGraph_dijk[i].vertex2,key:key_dijk[myGraph_dijk[i].vertex2]};             
+                    priorque_insert(newobj1);
+                }
+            }           
+            if(newobj.vertex!==r)
+            {
+                var newobj2={vertex1:newobj.vertex,vertex2:par_dijk[newobj.vertex],weight:newobj.key};
+                myGraph_dijkresult.push(newobj2);
+            }
+        }
+      }
+      var time=0;
+      for(i=1;i<graph_vertex;i++)
+      {
+        var label_name;
+        label_name="label"+myGraph_dijkresult[i].vertex1+""+myGraph_dijkresult[i].vertex2;
+        d3.select("svg").append("line").attr("id",label_name).attr("x1",myCoordinates[myGraph_dijkresult[i].vertex1].x1).attr("y1",myCoordinates[myGraph_dijkresult[i].vertex1].y1).attr("x2",myCoordinates[myGraph_dijkresult[i].vertex2].x1).attr("y2",myCoordinates[myGraph_dijkresult[i].vertex2].y1).style("stroke-width",2).style("stroke","green").transition().duration(1000).delay(time*2000).style("stroke","yellow");
+        time++;
+      }
+      var newEdge=document.createElement('p');
+      newEdge.textContent="Dijkstra's Output\n";
+      document.getElementById("print_dijkstra").appendChild(newEdge);
+    }
+    
     var x,y;
     var myCoordinates=[{x1:"",y1:""}];
+    function g_button_drawvertices()
+    { 
+      for(var i = 0; i < graph_vertex; i++) 
+      {
+        x = 800+200 * Math.cos(2 * Math.PI * i / graph_vertex);
+        y = 300+200 * Math.sin(2 * Math.PI * i / graph_vertex);
+
+        var newobj={x1:x,y1:y};
+        myCoordinates.push(newobj);
+      }
+      for(i=0;i<graph_vertex;i++)
+      {
+        d3.select("svg").append("circle").attr("cx", myCoordinates[i+1].x1).attr("cy", myCoordinates[i+1].y1).attr("r", 20).attr("stroke","black").attr("stroke-width",3).style("fill", "yellow");
+        
+        d3.select("svg").append("text").attr("x",myCoordinates[i+1].x1-5).attr("y",myCoordinates[i+1].y1+5).text(i+1).attr("font-family", "sans-serif").attr("font-size", "20px").attr("fill", "red");
+      }
+    }
+    function g_button_drawedge()
+    {
+      var temp_graph_vertex1=Number(document.getElementById("g_vertex1").value);
+      var temp_graph_vertex2=Number(document.getElementById("g_vertex2").value);
+      if (graph_weighttype.localeCompare("weighted")==0)
+        temp_graph_weight=Number(document.getElementById("g_weight").value);
+      else
+        temp_graph_weight=1;
+
+      var label_name;
+      label_name="label"+temp_graph_vertex1+""+temp_graph_vertex2;
+      d3.select("svg").append("line").attr("id",label_name).attr("x1",myCoordinates[temp_graph_vertex1].x1).attr("y1",myCoordinates[temp_graph_vertex1].y1).attr("x2",myCoordinates[temp_graph_vertex2].x1).attr("y2",myCoordinates[temp_graph_vertex2].y1).style("stroke","green").style("stroke-width",2);
+
+      if(graph_weighttype.localeCompare("weighted")==0)
+      {
+        d3.select("svg").append("text").attr("x",(myCoordinates[temp_graph_vertex1].x1+(2*myCoordinates[temp_graph_vertex2].x1))/3).attr("y",(myCoordinates[temp_graph_vertex1].y1+(2*myCoordinates[temp_graph_vertex2].y1))/3).text(temp_graph_weight).attr("font-family", "sans-serif").attr("font-size", "15px").attr("fill", "red");
+      }
+    }
     function g_button_drawgraph()
     { 
       for(var i = 0; i < graph_vertex; i++) 
@@ -396,7 +573,7 @@
         {
           d3.select("svg").append("text").attr("x",(myCoordinates[myGraph[i].vertex1].x1+(2*myCoordinates[myGraph[i].vertex2].x1))/3).attr("y",(myCoordinates[myGraph[i].vertex1].y1+(2*myCoordinates[myGraph[i].vertex2].y1))/3).text(myGraph[i].weight).attr("font-family", "sans-serif").attr("font-size", "15px").attr("fill", "red");
         }
-      }   
+      }
     }
     </script>
 
@@ -417,19 +594,20 @@
         <h3>Enter the number of edges and vertices </h3>
         <input type="text" style="width:75px" id="g_edge">
         <input type="text" style="width:75px" id="g_vertex" />
-        <button type="button" id="button_edgevertex" onclick="g_button_edgevertex()" >Enter</button><br />
+        <button type="button" id="button_edgevertex" onclick="g_button_edgevertex();g_button_drawvertices()" >Enter</button><br />
 
         <h3>Enter the edge nodes (and weight)</h3>
         <input type="text" style="width:75px" id="g_vertex1" />
         <input type="text" style="width:75px" id="g_vertex2" />
         <input type="text" style="width:75px" id="g_weight" />
-        <button type="button" id="button_edgenodes" onclick="g_button_edgenodes()" >Enter</button><br />
-        <br>
-        <button type="button" id="button_drawgraph" onclick="g_button_drawgraph()" >Draw Graph</button><br />
+        <button type="button" id="button_edgenodes" onclick="g_button_edgenodes();g_button_drawedge();" >Enter</button><br />
         
         <h3>Function</h3>
+        <h5>Enter start node (for Prim/Dijkstra)</h5>
+        <input type="text" style="width:75px" id="g_startnode" />
         <button type="button" id="button_kruskal" onclick="kruskal()" >Kruskal</button>
-        <button type="button" id="button_prim" onclick="prim()" >Prim</button><br />
+        <button type="button" id="button_prim" onclick="prim()" >Prim</button>
+        <button type="button" id="button_dijkstra" onclick="dijkstra()" >Dijkstra</button><br />
 
         <p id="g_print_type"></p>
         <p id="g_print_weighttype"></p>
@@ -437,6 +615,7 @@
         <p id="print_newedge"></p>
         <p id="kruskal_mstedge"></p>
         <p id="prim_mstedge"></p>
+        <p id="print_dijkstra"></p>
 
       </body>
     </foreignObject>
