@@ -89,7 +89,7 @@ body {
         </font>
 
         <input type="text" style="width:75px" id="g_startnode" /><br><br>
-        <button type="button" id="button_bfs" onclick="bfs_init_option()" >BFS</button>
+        <button type="button" id="button_bfs" onclick="bfs_init()" >BFS</button>
         <button type="button" id="button_dfs" onclick="dfs_init()" >DFS</button>
         <button type="button" id="button_kruskal" onclick="kruskal()" >Kruskal</button>
         <button type="button" id="button_prim" onclick="prim()" >Prim</button>
@@ -122,13 +122,6 @@ var myGraph_prim_mst=[{vertex1:"",vertex2:"",weight:""}];
 var myGraph_dijk_result=[{vertex1:"",vertex2:"",weight:""}];
 var myGraph_bellman_result=[{vertex1:"",vertex2:"",weight:""}];
 var myGraph_floyd_result=[{vertex1:"",vertex2:"",weight:""}];
-var totaltime_bfs=0;
-var totaltime_dfs=0;
-var totaltime_kruskal=0;
-var totaltime_prim=0;
-var totaltime_dijk=0;
-var totaltime_bell=0;
-var totaltime_floyd=0;
 
 
 var par_bfs=[];
@@ -382,6 +375,7 @@ var svg = d3.select('body').append('svg')
     var myGraph_bfs=[{vertex1:"",vertex2:"",weight:""}];
     var sol_size=0;
     var x,y;
+    var time_total=0;
 
     function bfs(start,mySVG)
     {
@@ -395,8 +389,8 @@ var svg = d3.select('body').append('svg')
       var v;
       x=300;
       y=50;
-      mySVG.append("text").attr("x",x).attr("y",y).attr("font-family", "Helvetica").text("Added to queue (visited, gray): "+start).attr("font-size", "12px").attr("fill", "white").transition().delay(totaltime_bfs*2000).duration(30).attr("fill", "#000080");  
-      totaltime_bfs++;
+      mySVG.append("text").attr("x",x).attr("y",y).attr("font-family", "Helvetica").text("Added to queue (visited, gray): "+start).attr("font-size", "12px").attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");  
+      time_total++;
       while(front<=rear)
       {
         v=que[front];
@@ -413,33 +407,37 @@ var svg = d3.select('body').append('svg')
             myGraph_bfs_result.push(newobj);
             sol_size++;
             y=y+40;
-            mySVG.append("text").attr("x",x).attr("y",y).attr("font-family", "Helvetica").text("Added to queue: "+myGraph_bfs[i].vertex2).attr("font-size", "12px").attr("fill", "white").transition().delay(totaltime_bfs*2000).duration(30).attr("fill", "#000080");
-            totaltime_bfs++;
+            mySVG.append("text").attr("x",x).attr("y",y).attr("font-family", "Helvetica").text("Added to queue: "+myGraph_bfs[i].vertex2).attr("font-size", "12px").attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
+            time_total++;
             y=y+40;
-            mySVG.append("text").attr("x",x).attr("y",y).attr("font-family", "Helvetica").text("Edge: "+newobj.vertex1+" "+newobj.vertex2+" added to solution").attr("font-size", "12px").attr("fill", "white").transition().delay(totaltime_bfs*2000).duration(30).attr("fill", "#9C9C9C");
+            mySVG.append("text").attr("x",x).attr("y",y).attr("font-family", "Helvetica").text("Edge: "+newobj.vertex1+" "+newobj.vertex2+" added to solution").attr("font-size", "12px").attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "#9C9C9C");
             var label_name;
             label_name="label"+newobj.vertex1+""+newobj.vertex2;
-            mySVG.append("line").attr("id",label_name).attr("x1",myCoordinates[newobj.vertex1].x1).attr("y1",myCoordinates[newobj.vertex1].y1).attr("x2",myCoordinates[newobj.vertex2].x1).attr("y2",myCoordinates[newobj.vertex2].y1).style("stroke-width",1.5).style("stroke","none").transition().delay(totaltime_bfs*2000).duration(30).style("stroke","#4169E1");
+            mySVG.append("line").attr("id",label_name).attr("x1",myCoordinates[newobj.vertex1].x1).attr("y1",myCoordinates[newobj.vertex1].y1).attr("x2",myCoordinates[newobj.vertex2].x1).attr("y2",myCoordinates[newobj.vertex2].y1).style("stroke-width",1.5).style("stroke","none").transition().delay(time_total*2000).duration(30).style("stroke","#4169E1");
             if(graph_weighttype.localeCompare("weighted")==0)
             {
-              mySVG.append("text").attr("x",(myCoordinates[newobj.vertex1].x1+(2*myCoordinates[newobj.vertex2].x1))/3).attr("y",(myCoordinates[newobj.vertex1].y1+(2*myCoordinates[newobj.vertex2].y1))/3).attr("font-family", "Helvetica").text(newobj.weight).attr("font-size", "15px").attr("fill", "white").transition().delay(totaltime_bfs*2000).duration(30).attr("fill", "#000080");
+              mySVG.append("text").attr("x",(myCoordinates[newobj.vertex1].x1+(2*myCoordinates[newobj.vertex2].x1))/3).attr("y",(myCoordinates[newobj.vertex1].y1+(2*myCoordinates[newobj.vertex2].y1))/3).attr("font-family", "Helvetica").text(newobj.weight).attr("font-size", "15px").attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
             }            
-            totaltime_bfs++;
+            time_total++;
           }
         }
         front++;
         color_bfs[v]=2;
         y=y+40;
-        mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("Removed from queue (black): "+v).attr("font-size", "12px").attr("fill", "white").transition().delay(totaltime_bfs*2000).duration(30).attr("fill", "#000080");
-        totaltime_bfs++;
+        mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("Removed from queue (black): "+v).attr("font-size", "12px").attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
+        time_total++;
       }
       
     }
-    function bfs_init(sampleSVG)
+    function bfs_init()
     {
+var start=Number(document.getElementById("g_startnode").value);
+      var newWindow = window.open('');
+        newWindowRoot = d3.select(newWindow.document.body)
+            .attr("width","1060px")
+            .attr("margin","50px auto");
 
-
-          
+             var sampleSVG = newWindowRoot;
 
          var mySVG=sampleSVG.append('svg')
         .attr('width',10000)
@@ -462,7 +460,7 @@ var svg = d3.select('body').append('svg')
       x=50;
       y=50;
       mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("Start Node: "+start).attr("font-size", "15px").attr("fill", "blue");
-      totaltime_bfs=1;
+      time_total=1;
       for(var i=1;i<=graph_vertex;i++)
       {
         par_bfs[i]=-1;
@@ -470,15 +468,15 @@ var svg = d3.select('body').append('svg')
         color_bfs[i]=0;
       }
       y=y+40;
-      mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("Initializing all nodes").attr("font-size", "15px").attr("fill", "white").transition().delay(totaltime_bfs*2000).duration(30).attr("fill", "#000080");
-      totaltime_bfs++;
+      mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("Initializing all nodes").attr("font-size", "15px").attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
+      time_total++;
       y=y+40;
-      mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("Created empty queue with initial").attr("font-size", "15px").attr("fill", "white").transition().delay(totaltime_bfs*2000).duration(30).attr("fill", "#000080");
+      mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("Created empty queue with initial").attr("font-size", "15px").attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
       y=y+15;
-      mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("distance of each node set to infinity").attr("font-size", "15px").attr("fill", "white").transition().delay(totaltime_bfs*2000).duration(30).attr("fill", "#000080");
+      mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("distance of each node set to infinity").attr("font-size", "15px").attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
       y=y+15;
-      mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("color of each node set to white").attr("font-size", "15px").attr("fill", "white").transition().delay(totaltime_bfs*2000).duration(30).attr("fill", "#000080");
-      totaltime_bfs++;
+      mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("color of each node set to white").attr("font-size", "15px").attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
+      time_total++;
       for(var i=1;i<=2*graph_edge;i++)
       {
         var newobj=myGraph_undir[i];
@@ -520,38 +518,6 @@ var svg = d3.select('body').append('svg')
       }  */
     }
 
-    function bfs_init_option()
-    {
-      var start=Number(document.getElementById("g_startnode").value);
-      var newWindow = window.open('');
-        newWindowRoot = d3.select(newWindow.document.body)
-            .attr("width","1060px")
-            .attr("margin","50px auto");
-               var sampleSVG = newWindowRoot;
-     
-        var butt=sampleSVG
-        .append("button")
-        .attr("id", "brr")
-        .text("Step-Wise Solution")
-        .attr("width", 100)
-        .attr("height", 100);
-        
-
-         document.getElementById("brr").onclick =  function(){bfs_init(sampleSVG);};
-/*
-        sampleSVG
-        .append("text")
-        .text("\n\n\n\n");
-
-        sampleSVG
-        .append("button")
-        .text("Jump to Result")
-        .attr("width", 100)
-        .attr("height", 100)
-        .attr("id", "bfs_jump");
-*/
-
-    }
     var track_dfs=[];
     var position_dfs=[];
     var myGraph_dfs=[{vertex1:"",vertex2:"",weight:""}];
