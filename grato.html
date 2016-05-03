@@ -414,6 +414,8 @@ var svg = d3.select('body').append('svg')
             var label_name;
             label_name="label"+newobj.vertex1+""+newobj.vertex2;
             mySVG.append("line").attr("id",label_name).attr("x1",myCoordinates[newobj.vertex1].x1).attr("y1",myCoordinates[newobj.vertex1].y1).attr("x2",myCoordinates[newobj.vertex2].x1).attr("y2",myCoordinates[newobj.vertex2].y1).style("stroke-width",1.5).style("stroke","none").transition().delay(time_total*2000).duration(30).style("stroke","#4169E1");
+            g_button_drawvertices_newwindow(mySVG);
+
             if(graph_weighttype.localeCompare("weighted")==0)
             {
               mySVG.append("text").attr("x",(myCoordinates[newobj.vertex1].x1+(2*myCoordinates[newobj.vertex2].x1))/3).attr("y",(myCoordinates[newobj.vertex1].y1+(2*myCoordinates[newobj.vertex2].y1))/3).attr("font-family", "Helvetica").text(newobj.weight).attr("font-size", "15px").attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
@@ -455,8 +457,7 @@ var start=Number(document.getElementById("g_startnode").value);
      g_button_drawvertices_newwindow(mySVG)
    //   print_values();
 
-   if(randgraph_true===0)
-        print_values();
+      mySVG.append("text").attr("x",300).attr("y",20).text("").attr("font-family", "Helvetica").text("BFS").attr("font-size", "20px").attr("fill", "green");
       x=50;
       y=50;
       mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text("Start Node: "+start).attr("font-size", "15px").attr("fill", "blue");
@@ -545,6 +546,7 @@ var start=Number(document.getElementById("g_startnode").value);
           var label_name;
           label_name="label"+newobj.vertex1+""+newobj.vertex2;
           mySVG.append("line").attr("id",label_name).attr("x1",myCoordinates[newobj.vertex1].x1).attr("y1",myCoordinates[newobj.vertex1].y1).attr("x2",myCoordinates[newobj.vertex2].x1).attr("y2",myCoordinates[newobj.vertex2].y1).style("stroke-width",1.5).style("stroke","none").transition().delay(time_total*2000).duration(30).style("stroke","#4169E1");
+           g_button_drawvertices_newwindow(mySVG);
           if(graph_weighttype.localeCompare("weighted")==0)
           {
             mySVG.append("text").attr("x",(myCoordinates[newobj.vertex1].x1+(2*myCoordinates[newobj.vertex2].x1))/3).attr("y",(myCoordinates[newobj.vertex1].y1+(2*myCoordinates[newobj.vertex2].y1))/3).text("").attr("font-family", "Helvetica").attr("font-size", "15px").attr("fill", "#000080").transition().delay(time_total*2000).duration(30).text(newobj.weight).attr("fill", "#000080");
@@ -581,8 +583,7 @@ var start=Number(document.getElementById("g_startnode").value);
  //     g_button_drawvertices();
 //     print_values();     
 g_button_drawvertices_newwindow(mySVG);
-if(randgraph_true===0)
-        print_values();
+    mySVG.append("text").attr("x",300).attr("y",20).text("").attr("font-family", "Helvetica").text("DFS").attr("font-size", "20px").attr("fill", "green");
       x=50;
       y=50;
       
@@ -608,6 +609,11 @@ if(randgraph_true===0)
       {
         return a.vertex1-b.vertex1;
       })  
+  /*    for(var i=1;i<=2*graph_edge;i++)
+      {
+        y=y+40;
+        mySVG.append("text").attr("x",x).attr("y",y).text("").attr("font-family", "Helvetica").text(myGraph_dfs[i].vertex1+" "+myGraph_dfs[i].vertex2).attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "blue");
+      }*/
       for(var i=1;i<=graph_vertex;i++)
       {
         track_dfs[i]=0;
@@ -735,8 +741,7 @@ if(randgraph_true===0)
   var newEdge=document.createElement('p');
       newEdge.textContent="Scroll Down!";
       document.getElementById("kruskal_mstedge").appendChild(newEdge);
-      if(randgraph_true===0)
-        print_values();
+
       var mst_cost=0;
   /*  var newEdge=document.createElement('p');
       newEdge.textContent="Kruskal Output\n";
@@ -758,6 +763,7 @@ if(randgraph_true===0)
       {
         return a.weight-b.weight;
       })
+      mySVG.append("text").attr("x",300).attr("y",20).text("").attr("font-family", "Helvetica").text("Kruskals").attr("font-size", "20px").attr("fill", "green");
       var x=50;
       var y=50;
 
@@ -818,6 +824,7 @@ if(randgraph_true===0)
           var label_name;
           label_name="label"+myGraph_krusk[ptr].vertex1+""+myGraph_krusk[ptr].vertex2;
           mySVG.append("line").attr("id",label_name).attr("x1",myCoordinates[myGraph_krusk[ptr].vertex1].x1).attr("y1",myCoordinates[myGraph_krusk[ptr].vertex1].y1).attr("x2",myCoordinates[myGraph_krusk[ptr].vertex2].x1).attr("y2",myCoordinates[myGraph_krusk[ptr].vertex2].y1).style("stroke-width",1.5).style("stroke","none").transition().delay(time_total*2000).duration(30).style("stroke","#4169E1");
+           g_button_drawvertices_newwindow(mySVG);
           if(graph_weighttype.localeCompare("weighted")==0)
           {
             mySVG.append("text").attr("x",(myCoordinates[myGraph_krusk[ptr].vertex1].x1+(2*myCoordinates[myGraph_krusk[ptr].vertex2].x1))/3).attr("y",(myCoordinates[myGraph_krusk[ptr].vertex1].y1+(2*myCoordinates[myGraph_krusk[ptr].vertex2].y1))/3).text("").attr("font-family", "Helvetica").text(myGraph_krusk[ptr].weight).attr("font-size", "15px").attr("fill", "#000080").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
@@ -990,11 +997,11 @@ if(randgraph_true===0)
 //      g_drawgraph_small();
  //     g_button_drawvertices();
  g_button_drawvertices_newwindow(mySVG);
-      if(randgraph_true===0)
-        print_values();
+
  //     print_values();
   var newEdge=document.createElement('p');
       var mst_cost=0;
+      mySVG.append("text").attr("x",300).attr("y",20).text("").attr("font-family", "Helvetica").text("Prims").attr("font-size", "20px").attr("fill", "green");
       var x=50;
       var y=50;
       mySVG.append("text").attr("x",x).attr("y",y).attr("font-family", "Helvetica").text("Start Node: "+r).attr("font-size", "15px").attr("fill", "blue");
@@ -1082,6 +1089,7 @@ if(randgraph_true===0)
                 var label_name;
                 label_name="label"+newobj2.vertex1+""+newobj2.vertex2;
                 mySVG.append("line").attr("id",label_name).attr("x1",myCoordinates[newobj2.vertex1].x1).attr("y1",myCoordinates[newobj2.vertex1].y1).attr("x2",myCoordinates[newobj2.vertex2].x1).attr("y2",myCoordinates[newobj2.vertex2].y1).style("stroke-width",1.5).style("stroke","none").transition().delay(time_total*2000).duration(30).style("stroke","#4169E1");
+                 g_button_drawvertices_newwindow(mySVG);
                 if(graph_weighttype.localeCompare("weighted")==0)
                 {
                   mySVG.append("text").attr("x",(myCoordinates[newobj2.vertex1].x1+(2*myCoordinates[newobj2.vertex2].x1))/3).attr("y",(myCoordinates[newobj2.vertex1].y1+(2*myCoordinates[newobj2.vertex2].y1))/3).text(newobj2.weight).attr("font-family", "Helvetica").attr("font-size", "15px").attr("fill", "white").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
@@ -1138,9 +1146,9 @@ if(randgraph_true===0)
 //      g_drawgraph_small();
 //      g_button_drawvertices();
 g_button_drawvertices_newwindow(mySVG)
-          if(randgraph_true===0)
-        print_values();
+
  //     print_values();
+ mySVG.append("text").attr("x",300).attr("y",20).text("").attr("font-family", "Helvetica").text("Dijkstra").attr("font-size", "20px").attr("fill", "green");
       var x=50;
       var y=50;
       mySVG.append("text").attr("x",x).attr("y",y).attr("font-family", "Helvetica").text("Start Node: "+r).attr("font-size", "15px").attr("fill", "blue");
@@ -1229,6 +1237,7 @@ g_button_drawvertices_newwindow(mySVG)
                 var label_name;
                 label_name="label"+newobj2.vertex1+""+newobj2.vertex2;
                 mySVG.append("line").attr("id",label_name).attr("x1",myCoordinates[newobj2.vertex1].x1).attr("y1",myCoordinates[newobj2.vertex1].y1).attr("x2",myCoordinates[newobj2.vertex2].x1).attr("y2",myCoordinates[newobj2.vertex2].y1).style("stroke-width",1.5).style("stroke","none").transition().delay(time_total*2000).duration(30).style("stroke","#4169E1");
+                 g_button_drawvertices_newwindow(mySVG);
                 if(graph_weighttype.localeCompare("weighted")==0)
                 {
                   mySVG.append("text").attr("x",(myCoordinates[newobj2.vertex1].x1+(2*myCoordinates[newobj2.vertex2].x1))/3).attr("y",(myCoordinates[newobj2.vertex1].y1+(2*myCoordinates[newobj2.vertex2].y1))/3).attr("font-family", "Helvetica").text(newobj2.weight).attr("font-size", "15px").attr("fill", "#000080").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
@@ -1332,8 +1341,7 @@ g_button_drawvertices_newwindow(mySVG)
  //     g_drawgraph_small();
   //   g_button_drawvertices();
   g_button_drawvertices_newwindow(mySVG);
-           if(randgraph_true===0)
-        print_values();
+  mySVG.append("text").attr("x",300).attr("y",20).text("").attr("font-family", "Helvetica").text("Bellman Ford").attr("font-size", "20px").attr("fill", "green");
 //      print_values();     
       x=50;
       y=40;
@@ -1387,6 +1395,7 @@ g_button_drawvertices_newwindow(mySVG)
         var label_name;
         label_name="label"+myGraph_bellman_result[i].vertex1+""+myGraph_bellman_result[i].vertex2;
         mySVG.append("line").attr("id",label_name).attr("x1",myCoordinates[myGraph_bellman_result[i].vertex1].x1).attr("y1",myCoordinates[myGraph_bellman_result[i].vertex1].y1).attr("x2",myCoordinates[myGraph_bellman_result[i].vertex2].x1).attr("y2",myCoordinates[myGraph_bellman_result[i].vertex2].y1).style("stroke-width",1.5).style("stroke","none").transition().delay(time_total*2000).duration(30).style("stroke","#4169E1");
+         g_button_drawvertices_newwindow(mySVG);
         if(graph_weighttype.localeCompare("weighted")==0)
         {
           mySVG.append("text").attr("x",(myCoordinates[myGraph_bellman_result[i].vertex1].x1+(2*myCoordinates[myGraph_bellman_result[i].vertex2].x1))/3).attr("y",(myCoordinates[myGraph_bellman_result[i].vertex1].y1+(2*myCoordinates[myGraph_bellman_result[i].vertex2].y1))/3).attr("font-family", "Helvetica").text(myGraph_bellman_result[i].weight).attr("font-size", "15px").attr("fill", "#000080").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
@@ -1405,6 +1414,7 @@ g_button_drawvertices_newwindow(mySVG)
     function floyd(mySVG)
     {
       result_size=0;
+      mySVG.append("text").attr("x",300).attr("y",20).text("").attr("font-family", "Helvetica").text("BFS").attr("font-size", "20px").attr("fill", "green");
       x=300;
    //   y=y1+40+((graph_vertex*graph_vertex)*20);
    		y=40;
@@ -1484,8 +1494,7 @@ g_button_drawvertices_newwindow(mySVG)
  //     g_drawgraph_small();
 //      g_button_drawvertices();
 g_button_drawvertices_newwindow(mySVG)
-             if(randgraph_true===0)
-        print_values();
+
  //     print_values();  
       for(var i=0;i<=graph_vertex;i++)
       {
@@ -1504,6 +1513,7 @@ g_button_drawvertices_newwindow(mySVG)
             myGraph_floyd[i][j]=Number.MAX_VALUE;
         }
       }
+      mySVG.append("text").attr("x",300).attr("y",20).text("").attr("font-family", "Helvetica").text("Floyd Warshall").attr("font-size", "20px").attr("fill", "green");
       x=50;
       y=50;
       mySVG.append("text").attr("x",x).attr("y",y).attr("font-family", "Helvetica").text("Initializing all nodes").attr("font-size", "15px").attr("fill", "blue");
@@ -1545,6 +1555,7 @@ g_button_drawvertices_newwindow(mySVG)
         var label_name;
         label_name="label"+myGraph_floyd_result[i].vertex1+""+myGraph_floyd_result[i].vertex2;
         mySVG.append("line").attr("id",label_name).attr("x1",myCoordinates[myGraph_floyd_result[i].vertex1].x1).attr("y1",myCoordinates[myGraph_floyd_result[i].vertex1].y1).attr("x2",myCoordinates[myGraph_floyd_result[i].vertex2].x1).attr("y2",myCoordinates[myGraph_floyd_result[i].vertex2].y1).style("stroke-width",1.5).style("stroke","none").transition().delay(time_total*2000).duration(30).style("stroke","#4169E1");
+         g_button_drawvertices_newwindow(mySVG);
         if(graph_weighttype.localeCompare("weighted")==0)
         {
           mySVG.append("text").attr("x",(myCoordinates[myGraph_floyd_result[i].vertex1].x1+(2*myCoordinates[myGraph_floyd_result[i].vertex2].x1))/3).attr("y",(myCoordinates[myGraph_floyd_result[i].vertex1].y1+(2*myCoordinates[myGraph_floyd_result[i].vertex2].y1))/3).attr("font-family", "Helvetica").text(myGraph_floyd_result[i].weight).attr("font-size", "15px").attr("fill", "#000080").transition().delay(time_total*2000).duration(30).attr("fill", "#000080");
@@ -1757,25 +1768,15 @@ g_button_drawvertices_newwindow(mySVG)
           myGraph_undir.push(newobj2);          
           i++;
         }
-    j++;
-    if(j==10000)
-    {     
-    break;
-    }
-    }
-
-       var j=1;
-    if(j==10000)
-    { 
-    }
-    
-   else
-   {
-
+        j++;
+        if(j==10000)
+        {     
+        break;
+        }
+      }
     g_button_drawgraph();
-    print_values();
-  }
-        
+    g_button_drawvertices();
+    print_values();     
   }
 </script>
 <body onload= weightvisible();>
